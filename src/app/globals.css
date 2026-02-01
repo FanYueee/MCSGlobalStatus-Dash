@@ -1,0 +1,116 @@
+:root {
+  --bg-color: #0f0f1a;
+  --text-primary: #ffffff;
+  --text-secondary: #b3b3b3;
+  --accent-color: #7b2cbf;
+  --accent-glow: #9d4edd;
+  --glass-border: rgba(255, 255, 255, 0.1);
+}
+
+@font-face {
+  font-family: 'Minecraft';
+  src: url('/Minecraft.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: transparent;
+  color: var(--text-primary);
+  font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Minecraft Color Codes */
+.mc_black {
+  color: #000000;
+}
+
+.mc_dark_blue {
+  color: #0000AA;
+}
+
+.mc_dark_green {
+  color: #00AA00;
+}
+
+.mc_dark_aqua {
+  color: #00AAAA;
+}
+
+.mc_dark_red {
+  color: #AA0000;
+}
+
+.mc_dark_purple {
+  color: #AA00AA;
+}
+
+.mc_gold {
+  color: #FFAA00;
+}
+
+.mc_gray {
+  color: #AAAAAA;
+}
+
+.mc_dark_gray {
+  color: #555555;
+}
+
+.mc_blue {
+  color: #5555FF;
+}
+
+.mc_green {
+  color: #55FF55;
+}
+
+.mc_aqua {
+  color: #55FFFF;
+}
+
+.mc_red {
+  color: #FF5555;
+}
+
+.mc_light_purple {
+  color: #FF55FF;
+}
+
+.mc_yellow {
+  color: #FFFF55;
+}
+
+.mc_white {
+  color: #FFFFFF;
+}
+
+.mc_bold {
+  font-weight: bold;
+}
+
+.mc_strikethrough {
+  text-decoration: line-through;
+}
+
+.mc_underline {
+  text-decoration: underline;
+}
+
+.mc_italic {
+  font-style: italic;
+}

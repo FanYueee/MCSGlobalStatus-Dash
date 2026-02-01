@@ -1,0 +1,802 @@
+.cardWrapper {
+    perspective: 1000px;
+    width: 85vw;
+    max-width: none;
+}
+
+.glassCard {
+    /* Dirt background pattern to match FreeServer */
+    background-color: #121212;
+    background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAAXNSR0IArs4c6QAAAARNQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHaSURBVGhD7Zq7TcQwFEX7LwWkQApIASmQAilAClKAFEAKAAVQACkAFEAKSEF850aTzPg1n72Wy0j+6F3b8vW1fWzL9fW1lVLq4eHh/f39+fn58fHx6enp9fX14+Pj4+Pj/f39/f399fX18/Pz/f394+Pj6+vr/f398/Pz09PT29vb+/v7x8fH19fX+/v75+fn5+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v79/f39/f319fX+/v7x8fH19fX+/v75+fn5+fn19fX+/v7x8fH19fX+/v75+fn9/f39/f319fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn9/f39/f319fX+/v7x8fH19fX+0sppf4A92K9/a/3w2QAAAAASUVORK5CYII=");
+    background-size: 64px;
+    background-repeat: repeat;
+    image-rendering: pixelated;
+
+    /* Strongdark overlay to match game menu feel */
+    box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.75);
+
+    border: none;
+    border-radius: 0;
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    color: #e0e0e0;
+}
+
+/* Subtle inner shine */
+.glassCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 100%;
+    background: radial-gradient(circle at 50% -20%, rgba(255, 255, 255, 0.05), transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.controls {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* Input Styles - Minecraft Style */
+.inputContainer {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Combined Row for Type Toggle + Input */
+.combinedInputRow {
+    display: flex;
+    gap: 12px;
+    align-items: stretch;
+    width: 100%;
+}
+
+.typeToggleBtn {
+    margin-top: 0 !important;
+    /* Override searchBtn margin */
+    width: auto !important;
+    min-width: 120px;
+    padding: 0 16px;
+    font-size: 1rem;
+    flex-shrink: 0;
+    /* Keep size stable */
+    height: auto;
+    /* Let it stretch if needed, or match input */
+    /* Input height is approx 52px+ (padding 14*2 + line height 1.1em + borders) => ~56px.
+       searchBtn has padding 12px 0 -> 24 + 20px font = 44px. 
+       Let's ensure they match height.
+    */
+}
+
+.inputLabel {
+    color: #AAAAAA;
+    /* Standard Minecraft Label Color */
+    font-size: 1rem;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.75);
+    margin-left: 2px;
+    margin-bottom: 5px;
+}
+
+/* Exact Input Field Match with Blinking Underscore */
+.inputContainer {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    /* Take remaining space in row */
+}
+
+.inputBoxWrapper {
+    position: relative;
+    width: 100%;
+}
+
+.input {
+    width: 100%;
+    /* Transparent background so mirror text shows through clearly */
+    background-color: transparent;
+    border: 2px solid #FFFFFF;
+    /* Sharp white border */
+    border-radius: 0;
+    padding: 14px;
+    color: transparent;
+    /* Hide real text */
+    caret-color: transparent;
+    /* Hide real cursor */
+    font-size: 1.1rem;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    outline: none;
+    box-shadow: none;
+    /* No shadow on input itself */
+    position: relative;
+    z-index: 2;
+    /* Sit on top of mirror */
+}
+
+/* Mirror Element for Blinking Underscore */
+.inputMirror {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    color: #ffffff;
+    /* Pure White Text */
+    pointer-events: none;
+    z-index: 1;
+    white-space: pre;
+    overflow: hidden;
+    /* Background is now here, BEHIND the text */
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.blinkingUnderscore {
+    display: inline-block;
+    animation: blink 1s step-end infinite;
+    color: #ffffff;
+    margin-left: 2px;
+}
+
+@keyframes blink {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0;
+    }
+}
+
+.input:focus {
+    background-color: transparent;
+    border-color: #FFFFFF;
+    /* Stays white on focus */
+}
+
+/* Also ensure mirror background is visible through transparent input */
+
+/* Fix: The Border needs to be on the INPUT element so focus works, and Mirror just provides content background?
+   Input has border. Mirror is placed BEHIND input using z-index.
+   Input background is TRANSPARENT.
+   Mirror background is DARK.
+*/
+
+/* Minecraft Style Button - Exact Replica with ::before Bevel */
+.searchBtn {
+    flex: 0 0 auto;
+    width: 100%;
+    /* Main container settings */
+    background-color: #6F6F6F;
+    /* Exact gray from inspection */
+    border: 2px solid #000000;
+    /* Outer black border */
+    border-radius: 0;
+    color: #ffffff;
+    padding: 12px 0;
+    font-size: 1.25rem;
+    /* 20px */
+    font-family: 'Minecraft', 'Consolas', monospace;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-shadow: 2px 2px 0px #000000;
+    /* Hard black shadow */
+    box-shadow: none;
+    margin-top: 10px;
+    position: relative;
+    /* For pseudo-element */
+    overflow: hidden;
+    /* Keep bevel inside */
+}
+
+/* The 3D Bevel Highlight/Shadow uses a pseudo-element overlay */
+.searchBtn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.4);
+    border-left: 2px solid rgba(255, 255, 255, 0.4);
+    border-right: 2px solid rgba(0, 0, 0, 0.4);
+    border-bottom: 4px solid rgba(0, 0, 0, 0.4);
+    /* Thicker bottom shadow */
+    pointer-events: none;
+}
+
+.searchBtn:hover:not(:disabled) {
+    background-color: #6F6F6F;
+    /* Bg doesn't change much? */
+    border-color: #FFFFFF;
+    /* Outer border turns white on hover */
+    z-index: 10;
+}
+
+/* Hover state usually doesn't change inner bevel much, maybe slightly lighter? */
+
+.searchBtn:active:not(:disabled)::before {
+    border-top: 2px solid rgba(0, 0, 0, 0.4);
+    border-left: 2px solid rgba(0, 0, 0, 0.4);
+    border-right: 2px solid rgba(255, 255, 255, 0.4);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.searchBtn:disabled {
+    opacity: 1;
+    filter: grayscale(100%);
+    color: #707070;
+    border-color: #707070;
+    cursor: not-allowed;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: spin 0.8s infinite steps(8);
+    /* Pixelated spin */
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Results */
+.result {
+    margin-top: 30px;
+    padding-top: 24px;
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.resultHeader {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.favicon {
+    width: 64px;
+    height: 64px;
+    border-radius: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    image-rendering: pixelated;
+}
+
+.faviconPlaceholder {
+    width: 64px;
+    height: 64px;
+    border-radius: 0;
+    background: rgba(255, 255, 255, 0.05);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: rgba(255, 255, 255, 0.3);
+}
+
+.headerInfo h3 {
+    font-size: 1.3rem;
+    margin: 0 0 8px 0;
+    color: #fff;
+    line-height: 1;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+    font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+.tags {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.tagOnline,
+.tagOffline,
+.tagVersion {
+    padding: 4px 10px;
+    border-radius: 0;
+    font-size: 0.8rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    border: 2px solid;
+}
+
+.tagOnline {
+    background: rgba(85, 255, 85, 0.2);
+    color: #55FF55;
+    border-color: #55FF55;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.tagOffline {
+    background: rgba(255, 85, 85, 0.2);
+    color: #FF5555;
+    border-color: #FF5555;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.tagVersion {
+    background: rgba(255, 255, 255, 0.1);
+    color: #AAAAAA;
+    border-color: #AAAAAA;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.motdBox {
+    background: rgba(0, 0, 0, 0.4);
+    border-left: 3px solid #55FF55;
+    padding: 16px;
+    border-radius: 0;
+    margin-bottom: 24px;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    font-size: 1rem;
+    line-height: 1.3;
+    color: #e0e0e0;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    word-break: normal;
+}
+
+/* Stats Row - Centered */
+.statsRow {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.statBox {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    padding: 16px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+}
+
+.statBox:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.statLabel {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    letter-spacing: 1px;
+    font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+.statValue {
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: #fff;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
+}
+
+.statSub {
+    font-size: 0.9rem;
+    font-weight: 400;
+    color: rgba(255, 255, 255, 0.4);
+}
+
+.latencyValue {
+    color: #55FFFF;
+}
+
+.metaInfo {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    padding: 8px 0;
+}
+
+.metaRow {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-size: 0.85rem;
+    font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+.metaRow:last-child {
+    border-bottom: none;
+}
+
+.metaRow span:first-child {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.metaRow span:last-child {
+    color: #fff;
+    text-align: right;
+}
+
+.mono {
+    font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+/* Error Container */
+.errorContainer {
+    margin-top: 20px;
+    background: rgba(255, 85, 85, 0.15);
+    border: 2px solid #FF5555;
+    border-radius: 0;
+    padding: 16px;
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    animation: slideDown 0.3s ease-out;
+    font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+.errorIcon {
+    flex-shrink: 0;
+    padding-top: 2px;
+}
+
+.errorContainer h4 {
+    margin: 0 0 4px 0;
+    color: #FF5555;
+    font-size: 0.95rem;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.errorContainer p {
+    margin: 0;
+    color: rgba(255, 170, 170, 0.9);
+    font-size: 0.85rem;
+}
+
+.offlineMessage {
+    text-align: center;
+    color: #FF5555;
+    font-style: normal;
+    background: rgba(0, 0, 0, 0.3);
+    padding: 12px;
+    border-radius: 0;
+    border: 2px solid rgba(255, 85, 85, 0.3);
+    font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+/* Both Results Side by Side */
+.bothResults {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-top: 30px;
+    padding-top: 24px;
+    border-top: 2px solid rgba(255, 255, 255, 0.1);
+    animation: slideDown 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.bothResults .result {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 0;
+    padding: 20px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+}
+
+.bothResults .resultHeader {
+    flex-direction: column;
+    text-align: center;
+    gap: 12px;
+}
+
+.bothResults .headerInfo h3 {
+    font-size: 1.1rem;
+}
+
+.bothResults .tags {
+    justify-content: center;
+}
+
+.bothResults .statsRow {
+    justify-content: center;
+}
+
+/* Type Tag */
+.tagType {
+    padding: 4px 10px;
+    border-radius: 0;
+    font-size: 0.8rem;
+    font-weight: 400;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    background: rgba(114, 9, 183, 0.3);
+    color: #b794f6;
+    border: 2px solid #b794f6;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .cardWrapper {
+        max-width: 100%;
+    }
+
+    .bothResults {
+        grid-template-columns: 1fr;
+    }
+
+    .row {
+        flex-direction: column;
+    }
+
+    .searchBtn {
+        width: 100%;
+    }
+}
+
+/* DNS Section */
+.dnsSection {
+    margin-top: 16px;
+}
+
+.dnsToggle {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    padding: 10px 16px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.dnsToggle:hover {
+    background: rgba(0, 0, 0, 0.4);
+    color: #fff;
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+/* DNS Animate Wrapper */
+.dnsWrapper {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.3s ease-out;
+}
+
+.dnsWrapper.expanded {
+    grid-template-rows: 1fr;
+    margin-top: 12px;
+    /* Margin flows with expansion */
+}
+
+.dnsInner {
+    overflow: hidden;
+}
+
+.dnsTable {
+    background: rgba(0, 0, 0, 0.3);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    border-radius: 0;
+    /* No scroll bar - let content wrap */
+}
+
+.dnsHeader {
+    display: grid;
+    grid-template-columns: minmax(100px, 1.5fr) minmax(50px, 0.5fr) minmax(100px, 2fr);
+    gap: 8px;
+    padding: 10px 16px;
+    background: rgba(0, 0, 0, 0.3);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.5);
+    letter-spacing: 0.5px;
+    font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+.dnsRow {
+    display: grid;
+    grid-template-columns: minmax(100px, 1.5fr) minmax(50px, 0.5fr) minmax(100px, 2fr);
+    gap: 8px;
+    padding: 10px 16px;
+    font-size: 0.75rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+.dnsRow:last-child {
+    border-bottom: none;
+}
+
+.dnsRow span {
+    word-break: break-all;
+    overflow-wrap: anywhere;
+}
+
+/* Distributed Mode Styling */
+.distributedLayout {
+    display: flex;
+    gap: 24px;
+    margin-top: 24px;
+    align-items: flex-start;
+}
+
+.nodeSidebar {
+    flex: 0 0 220px;
+    /* Fixed narrow width */
+    max-height: 600px;
+    overflow-y: auto;
+    background: rgba(0, 0, 0, 0.2);
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    padding: 12px;
+}
+
+.nodeDetail {
+    flex: 1;
+    /* Take remaining space */
+    min-width: 0;
+    /* Prevent overflow issues */
+}
+
+
+.sidebarTitle {
+    color: #AAAAAA;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    text-shadow: 2px 2px 0 #000;
+    margin: 0 0 12px 0;
+    font-size: 1rem;
+    padding-left: 4px;
+}
+
+.nodeList {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.nodeItem {
+    position: relative;
+    background-color: #6F6F6F;
+    border: 2px solid #000000;
+    padding: 8px 10px;
+    /* Smaller padding */
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    color: #ffffff;
+    text-shadow: 2px 2px 0 #000;
+    cursor: pointer;
+    overflow: hidden;
+    width: 100%;
+    text-align: left;
+    transition: transform 0.1s;
+}
+
+/* 3D Bevel for Node Items */
+.nodeItem::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.4);
+    border-left: 2px solid rgba(255, 255, 255, 0.4);
+    border-right: 2px solid rgba(0, 0, 0, 0.4);
+    border-bottom: 2px solid rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+.nodeItem:hover {
+    border-color: #FFFFFF;
+    z-index: 5;
+    transform: scale(1.02);
+}
+
+.nodeItem.selectedNode {
+    border-color: #FFFF55;
+    background-color: #585858;
+    z-index: 6;
+}
+
+.nodeInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 0px;
+}
+
+.nodeRegion {
+    font-size: 0.9rem;
+    color: #FFFF55;
+}
+
+.nodeIp {
+    font-size: 0.7rem;
+    color: #DDDDDD;
+}
+
+.nodeStatus {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+    margin-left: 8px;
+}
+
+.nodeStatus.online {
+    background-color: #55FF55;
+    box-shadow: 0 0 8px #55FF55;
+}
+
+.nodeStatus.offline {
+    background-color: #FF5555;
+    box-shadow: 0 0 8px #FF5555;
+    /* If we want text 'OFF' for offline, we remove fixed w/h. 
+       But a red dot is cleaner and smaller. */
+}
+
+.emptyDetail {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    color: rgba(255, 255, 255, 0.3);
+    font-family: 'Minecraft', 'Consolas', monospace;
+    border: 2px dashed rgba(255, 255, 255, 0.1);
+}
+
+/* Responsive Grid fix for Both Results */
+@media (max-width: 768px) {
+    .distributedLayout {
+        flex-direction: column;
+    }
+
+    .nodeSidebar {
+        width: 100%;
+        max-height: 300px;
+    }
+
+    .nodeDetail {
+        width: 100%;
+    }
+}

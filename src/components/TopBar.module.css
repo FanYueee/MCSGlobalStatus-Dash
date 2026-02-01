@@ -1,0 +1,110 @@
+.topBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 80px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Space out left and right groups */
+    padding: 0 40px;
+    z-index: 100;
+    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+}
+
+.leftGroup {
+    display: flex;
+    align-items: center;
+    gap: 60px;
+}
+
+.rightGroup {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.titleSection {
+    display: flex;
+    flex-direction: column;
+}
+
+.title {
+    font-family: 'Minecraft', 'Consolas', monospace;
+    font-size: 1.5rem;
+    color: #ffffff;
+    text-shadow: 2px 2px 0 #000;
+    margin: 0;
+}
+
+.subtitle {
+    font-family: 'Minecraft', 'Consolas', monospace;
+    font-size: 0.8rem;
+    color: #AAAAAA;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.menu {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Authentic Minecraft Button Style for Nav */
+.navBtn {
+    background-color: #6F6F6F;
+    border: 2px solid #000000;
+    position: relative;
+    padding: 8px 20px;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    color: #E0E0E0;
+    font-size: 1rem;
+    cursor: pointer;
+    text-shadow: 2px 2px 0 #000000;
+    outline: none;
+    box-shadow: inset -2px -2px 0 #000, inset 2px 2px 0 rgba(255, 255, 255, 0.2);
+    /* Fallback */
+}
+
+/* 3D Bevel Pseudo-element */
+.navBtn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-top: 2px solid rgba(255, 255, 255, 0.4);
+    border-left: 2px solid rgba(255, 255, 255, 0.4);
+    border-right: 2px solid rgba(0, 0, 0, 0.4);
+    border-bottom: 4px solid rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+}
+
+.navBtn:hover {
+    border-color: #FFFFFF;
+    color: #FFFF55;
+    z-index: 10;
+}
+
+.navBtn.active {
+    color: #FFFF55;
+    background: #585858;
+    border-color: #FFFFFF;
+}
+
+.navBtn.active::before {
+    /* Invert for active/depressed look if desired, or just keep it highlighted */
+    border-top: 2px solid rgba(0, 0, 0, 0.6);
+    border-left: 2px solid rgba(0, 0, 0, 0.6);
+    border-right: 2px solid rgba(255, 255, 255, 0.2);
+    border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.divider {
+    width: 2px;
+    height: 30px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 0 10px;
+}
