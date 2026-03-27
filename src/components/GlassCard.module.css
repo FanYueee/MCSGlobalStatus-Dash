@@ -122,6 +122,16 @@
     /* Sit on top of mirror */
 }
 
+.inputSelectionActive {
+    color: #ffffff;
+    caret-color: #ffffff;
+}
+
+.inputSelectionActive::selection {
+    background-color: rgba(85, 255, 255, 0.35);
+    color: #ffffff;
+}
+
 /* Mirror Element for Blinking Underscore */
 .inputMirror {
     position: absolute;
@@ -142,11 +152,30 @@
     background-color: rgba(0, 0, 0, 0.4);
 }
 
+.caretOverlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 14px;
+    font-size: 1.1rem;
+    font-family: 'Minecraft', 'Consolas', monospace;
+    color: #ffffff;
+    pointer-events: none;
+    z-index: 2;
+    white-space: pre;
+    overflow: hidden;
+}
+
+.caretPrefix {
+    visibility: hidden;
+}
+
 .blinkingUnderscore {
     display: inline-block;
     animation: blink 1s step-end infinite;
     color: #ffffff;
-    margin-left: 2px;
 }
 
 @keyframes blink {

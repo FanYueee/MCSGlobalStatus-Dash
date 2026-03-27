@@ -4,7 +4,6 @@ import styles from './page.module.css';
 import LiquidBackground from '@/components/LiquidBackground';
 import { useState } from 'react';
 import GlassCard from '@/components/GlassCard';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
 import { LanguageProvider, useLanguage } from '@/components/LanguageProvider';
 import TopBar from '@/components/TopBar';
 import AboutModal from '@/components/AboutModal';

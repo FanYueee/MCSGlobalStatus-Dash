@@ -1,13 +1,13 @@
 "use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useSyncExternalStore } from 'react';
 
 type Language = 'en' | 'zh-TW';
 
 interface LanguageContextType {
     language: Language;
     setLanguage: (lang: Language) => void;
-    t: (key: string) => string;
+    t: (key: TranslationKey) => string;
 }
 
 const translations = {
@@ -97,28 +97,45 @@ const translations = {
     }
 };
 
+type TranslationKey = keyof typeof translations.en;
+
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
+function detectLanguage(): Language {
+    if (typeof window === 'undefined') {
+        return 'en';
+    }
+
+    const browserLang = navigator.language.toLowerCase();
+    return browserLang.includes('zh') || browserLang.includes('tw') || browserLang.includes('hk')
+        ? 'zh-TW'
+        : 'en';
+}
+
+function subscribeToLanguageChange(onStoreChange: () => void): () => void {
+    void onStoreChange;
+    return () => {};
+}
+
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-    const [language, setLanguage] = useState<Language>('en');
+    const detectedLanguage = useSyncExternalStore(
+        subscribeToLanguageChange,
+        detectLanguage,
+        () => null
+    );
+    const [languageOverride, setLanguageOverride] = useState<Language | null>(null);
+    const language = languageOverride ?? detectedLanguage;
 
-    useEffect(() => {
-        // Auto detect logic
-        const browserLang = navigator.language;
-        if (browserLang.includes('zh') || browserLang.includes('TW') || browserLang.includes('HK')) {
-            setLanguage('zh-TW');
-        } else {
-            setLanguage('en');
-        }
-    }, []);
-
-    const t = (key: string) => {
-        // @ts-ignore - Simple content access
-        return translations[language][key] || key;
+    const t = (key: TranslationKey) => {
+        return translations[language][key];
     };
 
+    if (!language) {
+        return null;
+    }
+
     return (
-        <LanguageContext.Provider value={{ language, setLanguage, t }}>
+        <LanguageContext.Provider value={{ language, setLanguage: setLanguageOverride, t }}>
             {children}
         </LanguageContext.Provider>
     );

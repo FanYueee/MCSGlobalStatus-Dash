@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import Image from 'next/image';
 import styles from './GlassCard.module.css'; // Reusing GlassCard styles for consistency
 import { useLanguage } from './LanguageProvider';
 
@@ -54,7 +55,13 @@ export default function AboutModal({ onClose }: AboutModalProps) {
                             {t('about_sponsor_title')}
                         </h3>
                         <a href="https://vproxy.cloud" target="_blank" rel="noopener noreferrer" style={{ display: 'block', textAlign: 'center', marginBottom: '12px' }}>
-                            <img src="/vproxy_logo.png" alt="vProxy Cloud" style={{ height: '60px', width: 'auto', maxWidth: '100%' }} />
+                            <Image
+                                src="/vproxy_logo.png"
+                                alt="vProxy Cloud"
+                                width={240}
+                                height={60}
+                                style={{ height: '60px', width: 'auto', maxWidth: '100%' }}
+                            />
                         </a>
                         <p style={{ margin: 0, fontSize: '0.9rem', color: '#ccc' }}>
                             {t('about_sponsor_desc')}

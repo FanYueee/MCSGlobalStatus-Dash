@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
+import Image from 'next/image';
 import styles from './GlassCard.module.css';
 import { useLanguage } from './LanguageProvider';
 
@@ -21,12 +22,23 @@ interface ServerResult {
     favicon?: string;
     error?: string;
     ip_info?: {
-        ip: string;
+        ip?: string;
         ips?: string[];
         asn?: { number: number; org: string } | { number: number; org: string }[];
         location?: { country: string; city?: string };
         dns_records?: DnsRecord[];
     };
+}
+
+interface NodeResult {
+    node_region: string;
+    status: ServerResult;
+}
+
+interface DistributedResult {
+    target: string;
+    result_count: number;
+    nodes: Record<string, NodeResult>;
 }
 
 
@@ -116,7 +128,7 @@ function ServerCard({ result, label }: { result: ServerResult; label?: string })
         <div className={styles.result}>
             <div className={styles.resultHeader}>
                 {result.favicon ? (
-                    <img src={result.favicon} alt="Favicon" className={styles.favicon} />
+                    <Image src={result.favicon} alt="Favicon" width={64} height={64} className={styles.favicon} unoptimized />
                 ) : (
                     <div className={styles.faviconPlaceholder}>?</div>
                 )}
@@ -313,11 +325,14 @@ interface GlassCardProps {
 export default function GlassCard({ mode }: GlassCardProps) {
     const { t } = useLanguage();
     const [server, setServer] = useState('');
+    const [caretPosition, setCaretPosition] = useState(0);
+    const [selectionRange, setSelectionRange] = useState<{ start: number; end: number } | null>(null);
+    const [isInputFocused, setIsInputFocused] = useState(false);
     const [type, setType] = useState<'java' | 'bedrock'>('java');
     const [loading, setLoading] = useState(false);
     const [result, setResult] = useState<ServerResult | null>(null);
-    const [distributedResult, setDistributedResult] = useState<any>(null);
-    const [selectedNode, setSelectedNode] = useState<any>(null);
+    const [distributedResult, setDistributedResult] = useState<DistributedResult | null>(null);
+    const [selectedNode, setSelectedNode] = useState<NodeResult | null>(null);
     const [errorHeader, setErrorHeader] = useState('');
     const [errorBody, setErrorBody] = useState('');
 
@@ -329,6 +344,16 @@ export default function GlassCard({ mode }: GlassCardProps) {
         setErrorHeader('');
         setErrorBody('');
     }, [mode]);
+
+    const syncInputSelection = (input: HTMLInputElement) => {
+        const start = input.selectionStart ?? input.value.length;
+        const end = input.selectionEnd ?? start;
+        setCaretPosition(input.selectionStart ?? input.value.length);
+        setSelectionRange(start === end ? null : { start, end });
+    };
+
+    const displayCaretPosition = isInputFocused ? caretPosition : server.length;
+    const caretCharacter = displayCaretPosition >= server.length ? '_' : '|';
 
     const handleSearch = async () => {
         if (!server.trim()) {
@@ -346,21 +371,21 @@ export default function GlassCard({ mode }: GlassCardProps) {
         setLoading(true);
 
         try {
-            const API_BASE = 'http://localhost:3000';
+            const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://172.20.186.83:3000';
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), mode === 'distributed' ? 20000 : 15000); // 20s for distributed might need more time
 
-            let endpoint = mode === 'distributed'
+            const endpoint = mode === 'distributed'
                 ? `/v1/distributed/${encodeURIComponent(server.trim())}`
                 : `/v1/status/${encodeURIComponent(server.trim())}`;
 
-            let url = `${API_BASE}${endpoint}?type=${type}`;
+            const url = `${API_BASE}${endpoint}?type=${type}`;
 
-            let res;
+            let res: Response;
             try {
                 res = await fetch(url, { signal: controller.signal });
-            } catch (err: any) {
-                if (err.name === 'AbortError') {
+            } catch (err: unknown) {
+                if (err instanceof Error && err.name === 'AbortError') {
                     throw new Error('Request Timeout');
                 }
                 throw new Error('Connection Failed');
@@ -376,19 +401,18 @@ export default function GlassCard({ mode }: GlassCardProps) {
             // await new Promise(r => setTimeout(r, 500)); // Delay for effect
 
             if (mode === 'distributed') {
-                setDistributedResult(data);
+                const distributedData = data as DistributedResult;
+                setDistributedResult(distributedData);
                 // Auto-select first node
-                if (data.nodes && Object.keys(data.nodes).length > 0) {
-                    setSelectedNode(Object.values(data.nodes)[0]);
-                }
+                setSelectedNode(Object.values(distributedData.nodes)[0] || null);
             } else {
-                setResult(data);
+                setResult(data as ServerResult);
             }
 
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error("API Error:", err);
             setErrorHeader(t('error_failed'));
-            setErrorBody(err.message || 'Unknown Error');
+            setErrorBody(err instanceof Error ? err.message : 'Unknown Error');
         } finally {
             setLoading(false);
         }
@@ -418,16 +442,42 @@ export default function GlassCard({ mode }: GlassCardProps) {
                         {/* Input Field */}
                         <div className={styles.inputContainer}>
                             <div className={styles.inputBoxWrapper}>
-                                <div className={styles.inputMirror}>
-                                    {server}<span className={styles.blinkingUnderscore}>_</span>
+                                <div
+                                    className={styles.inputMirror}
+                                    style={{ opacity: selectionRange ? 0 : 1 }}
+                                >
+                                    {server}
                                 </div>
+                                {!selectionRange && (
+                                    <div className={styles.caretOverlay} aria-hidden="true">
+                                        <span className={styles.caretPrefix}>
+                                            {server.slice(0, displayCaretPosition)}
+                                        </span>
+                                        <span className={styles.blinkingUnderscore}>{caretCharacter}</span>
+                                    </div>
+                                )}
                                 <input
                                     type="text"
                                     value={server}
-                                    onChange={(e) => setServer(e.target.value)}
+                                    onChange={(e) => {
+                                        setServer(e.target.value);
+                                        syncInputSelection(e.target);
+                                    }}
                                     placeholder=""
-                                    className={styles.input}
+                                    className={`${styles.input} ${selectionRange ? styles.inputSelectionActive : ''}`}
                                     onKeyDown={(e) => e.key === 'Enter' && handleSearch()}
+                                    onClick={(e) => syncInputSelection(e.currentTarget)}
+                                    onKeyUp={(e) => syncInputSelection(e.currentTarget)}
+                                    onSelect={(e) => syncInputSelection(e.currentTarget)}
+                                    onFocus={(e) => {
+                                        setIsInputFocused(true);
+                                        syncInputSelection(e.currentTarget);
+                                    }}
+                                    onBlur={() => {
+                                        setIsInputFocused(false);
+                                        setCaretPosition(server.length);
+                                        setSelectionRange(null);
+                                    }}
                                     autoComplete="off"
                                     spellCheck={false}
                                     disabled={loading}
@@ -476,7 +526,7 @@ export default function GlassCard({ mode }: GlassCardProps) {
                                 </div>
                             ) : (
                                 <div className={styles.nodeList}>
-                                    {Object.entries(distributedResult.nodes).map(([nodeId, node]: [string, any]) => (
+                                    {Object.entries(distributedResult.nodes).map(([nodeId, node]) => (
                                         <button
                                             key={nodeId}
                                             className={`${styles.nodeItem} ${selectedNode === node ? styles.selectedNode : ''}`}
