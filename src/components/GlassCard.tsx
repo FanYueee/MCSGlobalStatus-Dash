@@ -371,7 +371,7 @@ export default function GlassCard({ mode }: GlassCardProps) {
         setLoading(true);
 
         try {
-            const API_BASE = process.env.NEXT_PUBLIC_API_BASE || 'http://172.20.186.83:3000';
+            const API_BASE = process.env.NEXT_PUBLIC_API_BASE?.replace(/\/$/, '') || '';
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), mode === 'distributed' ? 20000 : 15000); // 20s for distributed might need more time
 
