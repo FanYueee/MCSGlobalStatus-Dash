@@ -41,6 +41,112 @@ interface DistributedResult {
     nodes: Record<string, NodeResult>;
 }
 
+type ErrorTranslator = ReturnType<typeof useLanguage>['t'];
+
+type ApiErrorKind = 'timeout' | 'connection' | 'http';
+
+interface ApiErrorResponse {
+    error?: string;
+}
+
+interface DisplayError {
+    header: string;
+    body: string;
+}
+
+class ApiRequestError extends Error {
+    kind: ApiErrorKind;
+    status?: number;
+    backendError?: string;
+
+    constructor(kind: ApiErrorKind, message: string, options?: { status?: number; backendError?: string }) {
+        super(message);
+        this.name = 'ApiRequestError';
+        this.kind = kind;
+        this.status = options?.status;
+        this.backendError = options?.backendError;
+    }
+}
+
+function localizeBackendError(error: string, t: ErrorTranslator): string | null {
+    if (error === 'Missing required parameter: type (java or bedrock)') {
+        return t('error_backend_missing_type');
+    }
+
+    if (error === 'No probe nodes available') {
+        return t('error_backend_no_probes');
+    }
+
+    if (error === 'Invalid hostname') {
+        return t('error_backend_invalid_hostname');
+    }
+
+    if (error === 'Internal server error') {
+        return t('error_backend_internal');
+    }
+
+    if (error.startsWith('DNS resolution failed for ')) {
+        const target = error.slice('DNS resolution failed for '.length);
+        return `${t('error_backend_dns_failed_prefix')} ${target}`;
+    }
+
+    return null;
+}
+
+export function describeApiRequestError(error: ApiRequestError, t: ErrorTranslator): DisplayError {
+    if (error.kind === 'timeout') {
+        return {
+            header: t('error_timeout_title'),
+            body: t('error_timeout_body'),
+        };
+    }
+
+    if (error.kind === 'connection') {
+        return {
+            header: t('error_connection_title'),
+            body: t('error_connection_body'),
+        };
+    }
+
+    const localizedBackendError = error.backendError
+        ? localizeBackendError(error.backendError, t)
+        : null;
+
+    const bodySuffix = localizedBackendError
+        ? localizedBackendError
+        : error.backendError
+            ? `${t('error_details_prefix')} ${error.backendError}`
+            : error.status
+                ? `${t('error_http_body_prefix')} ${error.status}.`
+                : '';
+
+    if (error.status === 400) {
+        return {
+            header: t('error_bad_request_title'),
+            body: bodySuffix || t('error_bad_request_body'),
+        };
+    }
+
+    if (error.status === 503) {
+        return {
+            header: t('error_unavailable_title'),
+            body: bodySuffix || t('error_unavailable_body'),
+        };
+    }
+
+    if (error.status === 500) {
+        return {
+            header: t('error_server_title'),
+            body: bodySuffix || t('error_server_body'),
+        };
+    }
+
+    return {
+        header: t('error_http_title'),
+        body: bodySuffix || t('error_failed'),
+    };
+}
+
 
 // Protocol to version mapping (Java Edition)
 const JAVA_PROTOCOL_VERSIONS: Record<number, string> = {
@@ -386,15 +492,29 @@ export default function GlassCard({ mode }: GlassCardProps) {
                 res = await fetch(url, { signal: controller.signal });
             } catch (err: unknown) {
                 if (err instanceof Error && err.name === 'AbortError') {
-                    throw new Error('Request Timeout');
+                    throw new ApiRequestError('timeout', 'Request Timeout');
                 }
-                throw new Error('Connection Failed');
+                throw new ApiRequestError('connection', 'Connection Failed');
             } finally {
                 clearTimeout(timeoutId);
             }
 
             if (!res.ok) {
-                throw new Error(`HTTP ${res.status}`);
+                let backendError: string | undefined;
+
+                try {
+                    const payload = await res.json() as ApiErrorResponse;
+                    if (typeof payload.error === 'string' && payload.error.trim()) {
+                        backendError = payload.error.trim();
+                    }
+                } catch {
+                    // Ignore non-JSON error bodies and fall back to HTTP status handling.
+                }
+
+                throw new ApiRequestError('http', `HTTP ${res.status}`, {
+                    status: res.status,
+                    backendError,
+                });
             }
 
             const data = await res.json();
@@ -411,8 +531,14 @@ export default function GlassCard({ mode }: GlassCardProps) {
 
         } catch (err: unknown) {
             console.error("API Error:", err);
-            setErrorHeader(t('error_failed'));
-            setErrorBody(err instanceof Error ? err.message : 'Unknown Error');
+            if (err instanceof ApiRequestError) {
+                const displayError = describeApiRequestError(err, t);
+                setErrorHeader(displayError.header);
+                setErrorBody(displayError.body);
+            } else {
+                setErrorHeader(t('error_failed'));
+                setErrorBody(err instanceof Error ? err.message : 'Unknown Error');
+            }
         } finally {
             setLoading(false);
         }
