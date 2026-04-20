@@ -1,7 +1,7 @@
 "use client";
 
 import type { ReactNode } from 'react';
-import { createContext, useContext, useState, useSyncExternalStore } from 'react';
+import { createContext, useContext, useEffect, useState, useSyncExternalStore } from 'react';
 
 type Language = 'en' | 'zh-TW';
 
@@ -137,6 +137,7 @@ const translations = {
 type TranslationKey = keyof typeof translations.en;
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LANGUAGE_STORAGE_KEY = 'mcboxes-language';
 
 function detectLanguage(): Language {
     if (typeof window === 'undefined') {
@@ -147,6 +148,15 @@ function detectLanguage(): Language {
     return browserLang.includes('zh') || browserLang.includes('tw') || browserLang.includes('hk')
         ? 'zh-TW'
         : 'en';
+}
+
+function readStoredLanguage(): Language | null {
+    if (typeof window === 'undefined') {
+        return null;
+    }
+
+    const stored = window.localStorage.getItem(LANGUAGE_STORAGE_KEY);
+    return stored === 'en' || stored === 'zh-TW' ? stored : null;
 }
 
 function subscribeToLanguageChange(onStoreChange: () => void): () => void {
@@ -163,12 +173,26 @@ export function LanguageProvider({ children }: { children: ReactNode }) {
     const [languageOverride, setLanguageOverride] = useState<Language | null>(null);
     const language = languageOverride ?? detectedLanguage;
 
+    useEffect(() => {
+        const storedLanguage = readStoredLanguage();
+        if (storedLanguage) {
+            setLanguageOverride(storedLanguage);
+        }
+    }, []);
+
+    const setLanguage = (lang: Language) => {
+        setLanguageOverride(lang);
+        if (typeof window !== 'undefined') {
+            window.localStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+        }
+    };
+
     const t = (key: TranslationKey) => {
         return translations[language][key];
     };
 
     return (
-        <LanguageContext.Provider value={{ language, setLanguage: setLanguageOverride, t }}>
+        <LanguageContext.Provider value={{ language, setLanguage, t }}>
             {children}
         </LanguageContext.Provider>
     );
