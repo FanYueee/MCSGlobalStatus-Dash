@@ -154,10 +154,10 @@ function subscribeToLanguageChange(onStoreChange: () => void): () => void {
 }
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-    const detectedLanguage = useSyncExternalStore(
+    const detectedLanguage = useSyncExternalStore<Language>(
         subscribeToLanguageChange,
         detectLanguage,
-        () => null
+        () => 'en'
     );
     const [languageOverride, setLanguageOverride] = useState<Language | null>(null);
     const language = languageOverride ?? detectedLanguage;
@@ -165,10 +165,6 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     const t = (key: TranslationKey) => {
         return translations[language][key];
     };
-
-    if (!language) {
-        return null;
-    }
 
     return (
         <LanguageContext.Provider value={{ language, setLanguage: setLanguageOverride, t }}>

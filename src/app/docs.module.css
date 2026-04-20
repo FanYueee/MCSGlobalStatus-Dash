@@ -1,0 +1,417 @@
+.shell {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  padding: 116px 0 48px;
+  color: #e0e0e0;
+  font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+.frame {
+  width: min(85vw, 1180px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  animation: docsEnter 0.45s ease-out;
+}
+
+.backLink {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #6f6f6f;
+  border: 2px solid #000000;
+  color: #ffffff;
+  padding: 10px 18px;
+  font-size: 1rem;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  outline: none;
+  text-shadow: 2px 2px 0 #000000;
+  box-shadow: none;
+}
+
+.backLink::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-top: 2px solid rgba(255, 255, 255, 0.4);
+  border-left: 2px solid rgba(255, 255, 255, 0.4);
+  border-right: 2px solid rgba(0, 0, 0, 0.4);
+  border-bottom: 4px solid rgba(0, 0, 0, 0.4);
+  pointer-events: none;
+}
+
+.backLink:hover {
+  border-color: #ffffff;
+  color: #ffff55;
+  z-index: 10;
+}
+
+.backLink:active::before {
+  border-top: 2px solid rgba(0, 0, 0, 0.4);
+  border-left: 2px solid rgba(0, 0, 0, 0.4);
+  border-right: 2px solid rgba(255, 255, 255, 0.4);
+  border-bottom: 2px solid rgba(255, 255, 255, 0.4);
+}
+
+.hero,
+.section {
+  background-color: #121212;
+  background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAAXNSR0IArs4c6QAAAARNQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAHaSURBVGhD7Zq7TcQwFEX7LwWkQApIASmQAilAClKAFEAKAAVQACkAFEAKSEF850aTzPg1n72Wy0j+6F3b8vW1fWzL9fW1lVLq4eHh/f39+fn58fHx6enp9fX14+Pj4+Pj/f39/f399fX18/Pz/f394+Pj6+vr/f398/Pz09PT29vb+/v7x8fH19fX+/v75+fn5+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v79/f39/f319fX+/v7x8fH19fX+/v75+fn5+fn19fX+/v7x8fH19fX+/v75+fn9/f39/f319fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn19fX+/v7x8fH19fX+/v75+fn9/f39/f319fX+/v7x8fH19fX+0sppf4A92K9/a/3w2QAAAAASUVORK5CYII=");
+  background-size: 64px;
+  background-repeat: repeat;
+  image-rendering: pixelated;
+  box-shadow:
+    inset 0 0 0 2000px rgba(0, 0, 0, 0.75),
+    0 12px 28px rgba(0, 0, 0, 0.28);
+  border: none;
+  padding: 28px 30px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before,
+.section::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at 50% -20%, rgba(255, 255, 255, 0.05), transparent 70%);
+  pointer-events: none;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(250px, 0.8fr);
+  gap: 24px;
+}
+
+.eyebrow {
+  display: inline-block;
+  margin-bottom: 12px;
+  color: #55ff55;
+  font-size: 0.82rem;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.heroTitle {
+  color: #ffff55;
+  font-size: clamp(1.8rem, 3vw, 2.7rem);
+  line-height: 1.2;
+  text-shadow: 3px 3px 0 rgba(0, 0, 0, 0.8);
+}
+
+.heroLead {
+  margin-top: 14px;
+  color: #d7d7d7;
+  line-height: 1.8;
+  font-size: 0.9rem;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.6);
+}
+
+.heroMeta {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+
+.metaCard {
+  background: rgba(0, 0, 0, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  padding: 14px;
+}
+
+.metaLabel {
+  color: #aaaaaa;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.metaValue {
+  color: #ffffff;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.sectionTitle,
+.sidebarTitle {
+  color: #ffff55;
+  font-size: 1.08rem;
+  margin-bottom: 14px;
+  text-shadow: 2px 2px 0 #000;
+}
+
+.sectionLead,
+.sidebarText,
+.cardText {
+  color: #d0d0d0;
+  line-height: 1.8;
+  font-size: 0.84rem;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+}
+
+.navList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 170px;
+  padding: 10px 14px;
+  background-color: #6f6f6f;
+  border: none;
+  color: #e0e0e0;
+  text-shadow: 2px 2px 0 #000000;
+  box-shadow: inset -2px -2px 0 rgba(0, 0, 0, 0.45), inset 2px 2px 0 rgba(255, 255, 255, 0.2);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.navLink:hover {
+  color: #ffff55;
+}
+
+.chipRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.chip {
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  color: #55ffff;
+  font-size: 0.74rem;
+}
+
+.gridTwo {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.endpointCard {
+  background: rgba(0, 0, 0, 0.35);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.endpointTop {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.method {
+  min-width: 74px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 10px;
+  background-color: #6f6f6f;
+  border: none;
+  color: #ffffff;
+  text-shadow: 2px 2px 0 #000000;
+  box-shadow: inset -2px -2px 0 rgba(0, 0, 0, 0.45), inset 2px 2px 0 rgba(255, 255, 255, 0.2);
+}
+
+.path {
+  color: #55ffff;
+  font-size: 0.82rem;
+  word-break: break-all;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.65);
+}
+
+.list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.listItem {
+  position: relative;
+  padding-left: 18px;
+  color: #d0d0d0;
+  line-height: 1.75;
+  font-size: 0.82rem;
+}
+
+.listItem::before {
+  content: '■';
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: #55ff55;
+  font-size: 0.68rem;
+}
+
+.codeBlock {
+  overflow-x: auto;
+  padding: 14px;
+  background: rgba(0, 0, 0, 0.5);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  color: #8df7a8;
+  font-size: 0.76rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  font-family: 'Minecraft', 'Consolas', monospace;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  padding: 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  text-align: left;
+  vertical-align: top;
+  font-size: 0.78rem;
+  line-height: 1.7;
+}
+
+.table th {
+  background: rgba(0, 0, 0, 0.42);
+  color: #ffff55;
+}
+
+.table td {
+  background: rgba(0, 0, 0, 0.28);
+  color: #d6d6d6;
+}
+
+.table tr:last-child td {
+  border-bottom: none;
+}
+
+.faqList {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.faqItem {
+  background: rgba(0, 0, 0, 0.34);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.faqButton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 16px;
+  border: 0;
+  background: transparent;
+  color: #ffffff;
+  font-family: 'Minecraft', 'Consolas', monospace;
+  text-align: left;
+  cursor: pointer;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.75);
+}
+
+.faqButton:hover {
+  color: #ffff55;
+}
+
+.faqQuestion {
+  font-size: 0.84rem;
+  line-height: 1.65;
+}
+
+.faqArrow {
+  color: #55ffff;
+  transition: transform 0.15s ease;
+}
+
+.faqOpen .faqArrow {
+  transform: rotate(180deg);
+}
+
+.faqAnswer {
+  padding: 0 16px 16px;
+  color: #d0d0d0;
+  font-size: 0.8rem;
+  line-height: 1.8;
+}
+
+.faqAnswerInner {
+  border-top: 2px solid rgba(255, 255, 255, 0.08);
+  padding-top: 14px;
+}
+
+.faqTagRow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.faqTag {
+  padding: 6px 10px;
+  background: rgba(0, 0, 0, 0.36);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.08);
+  color: #aaaaaa;
+  font-size: 0.7rem;
+}
+
+@keyframes docsEnter {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .hero,
+  .gridTwo {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 768px) {
+  .shell {
+    padding: 104px 0 32px;
+  }
+
+  .frame {
+    width: calc(100vw - 24px);
+  }
+
+  .hero,
+  .section {
+    padding: 18px;
+  }
+
+  .navLink {
+    width: 100%;
+  }
+}
