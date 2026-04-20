@@ -337,6 +337,12 @@ function ServerCard({ result, label }: { result: ServerResult; label?: string })
                 </div>
             )}
 
+            {!result.online && result.error && (
+                <div className={styles.offlineMessage}>
+                    Reason: {result.error}
+                </div>
+            )}
+
             <div className={styles.metaInfo}>
                 {result.version && (
                     <div className={styles.metaRow}>
@@ -442,16 +448,6 @@ function ServerCard({ result, label }: { result: ServerResult; label?: string })
                     </div>
                 </div>
             )}
-
-
-
-            {
-                !result.online && result.error && (
-                    <div className={styles.offlineMessage}>
-                        Reason: {result.error}
-                    </div>
-                )
-            }
 
             {/* DNS Records for offline servers */}
             {!result.online && result.ip_info?.dns_records && result.ip_info.dns_records.length > 0 && (

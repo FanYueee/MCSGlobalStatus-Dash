@@ -523,6 +523,7 @@
 }
 
 .offlineMessage {
+    margin-bottom: 16px;
     text-align: center;
     color: #FF5555;
     font-style: normal;
