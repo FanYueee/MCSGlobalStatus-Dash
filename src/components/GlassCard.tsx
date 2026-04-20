@@ -329,122 +329,119 @@ function ServerCard({ result, label }: { result: ServerResult; label?: string })
             )}
 
             {result.online && (
-                <>
-                    <div className={styles.statsRow}>
-                        <div className={styles.statBox}>
-                            <span className={styles.statLabel}>{t('players')}</span>
-                            <span className={styles.statValue}>{result.players?.online || 0} <span className={styles.statSub}>/ {result.players?.max}</span></span>
-                        </div>
+                <div className={styles.statsRow}>
+                    <div className={styles.statBox}>
+                        <span className={styles.statLabel}>{t('players')}</span>
+                        <span className={styles.statValue}>{result.players?.online || 0} <span className={styles.statSub}>/ {result.players?.max}</span></span>
                     </div>
+                </div>
+            )}
 
-                    <div className={styles.metaInfo}>
-                        {result.version && (
-                            <div className={styles.metaRow}>
-                                <span>{t('protocol')}</span>
-                                <span>{getVersionFromProtocol(result.version.protocol, result.type)} ({result.version.protocol})</span>
-                            </div>
-                        )}
-                        <div className={styles.metaRow}>
-                            <span>{t('ip')}</span>
-                            <span
-                                className={styles.mono}
-                                style={{ cursor: 'pointer' }}
-                                title="Click to copy"
-                                onClick={() => {
-                                    const text = copyTarget;
-                                    if (navigator.clipboard?.writeText) {
-                                        navigator.clipboard.writeText(text).catch(err => {
-                                            console.error('Failed to copy: ', err);
-                                        });
-                                    } else {
-                                        // Fallback for insecure contexts
-                                        const textArea = document.createElement("textarea");
-                                        textArea.value = text;
-                                        textArea.style.position = "fixed";
-                                        document.body.appendChild(textArea);
-                                        textArea.focus();
-                                        textArea.select();
-                                        try {
-                                            document.execCommand('copy');
-                                        } catch (err) {
-                                            console.error('Fallback: Oops, unable to copy', err);
-                                        }
-                                        document.body.removeChild(textArea);
-                                    }
-                                }}
-                            >
-                                {result.ip_info?.ip || result.host}
-                            </span>
-                        </div>
-                        <div className={styles.metaRow}>
-                            <span>Port</span>
-                            <span className={styles.mono}>{result.port}</span>
-                        </div>
-                        <div className={styles.metaRow}>
-                            <span>ISP / ASN</span>
-                            <span>{
-                                result.ip_info?.asn
-                                    ? Array.isArray(result.ip_info.asn)
-                                        ? result.ip_info.asn.map(a => `AS${a.number} ${a.org}`).join(' / ')
-                                        : `AS${result.ip_info.asn.number} ${result.ip_info.asn.org}`
-                                    : 'N/A'
-                            }</span>
-                        </div>
-                        <div className={styles.metaRow}>
-                            <span>{t('location')}</span>
-                            <span>{result.ip_info?.location?.country ? (result.ip_info.location.city ? `${result.ip_info.location.city}, ${result.ip_info.location.country}` : result.ip_info.location.country) : 'Unknown'}</span>
-                        </div>
-                        <div className={styles.metaRow}>
-                            <span>{t('cache_time')}</span>
-                            <span className={`${styles.mono} ${styles.metaValueWrap}`} title={cacheTooltip}>
-                                {cacheDisplayValue}
-                            </span>
-                        </div>
+            <div className={styles.metaInfo}>
+                {result.version && (
+                    <div className={styles.metaRow}>
+                        <span>{t('protocol')}</span>
+                        <span>{getVersionFromProtocol(result.version.protocol, result.type)} ({result.version.protocol})</span>
                     </div>
+                )}
+                <div className={styles.metaRow}>
+                    <span>{t('ip')}</span>
+                    <span
+                        className={styles.mono}
+                        style={{ cursor: 'pointer' }}
+                        title="Click to copy"
+                        onClick={() => {
+                            const text = copyTarget;
+                            if (navigator.clipboard?.writeText) {
+                                navigator.clipboard.writeText(text).catch(err => {
+                                    console.error('Failed to copy: ', err);
+                                });
+                            } else {
+                                // Fallback for insecure contexts
+                                const textArea = document.createElement("textarea");
+                                textArea.value = text;
+                                textArea.style.position = "fixed";
+                                document.body.appendChild(textArea);
+                                textArea.focus();
+                                textArea.select();
+                                try {
+                                    document.execCommand('copy');
+                                } catch (err) {
+                                    console.error('Fallback: Oops, unable to copy', err);
+                                }
+                                document.body.removeChild(textArea);
+                            }
+                        }}
+                    >
+                        {result.ip_info?.ip || result.host}
+                    </span>
+                </div>
+                <div className={styles.metaRow}>
+                    <span>Port</span>
+                    <span className={styles.mono}>{result.port}</span>
+                </div>
+                <div className={styles.metaRow}>
+                    <span>ISP / ASN</span>
+                    <span>{
+                        result.ip_info?.asn
+                            ? Array.isArray(result.ip_info.asn)
+                                ? result.ip_info.asn.map(a => `AS${a.number} ${a.org}`).join(' / ')
+                                : `AS${result.ip_info.asn.number} ${result.ip_info.asn.org}`
+                            : 'N/A'
+                    }</span>
+                </div>
+                <div className={styles.metaRow}>
+                    <span>{t('location')}</span>
+                    <span>{result.ip_info?.location?.country ? (result.ip_info.location.city ? `${result.ip_info.location.city}, ${result.ip_info.location.country}` : result.ip_info.location.country) : 'Unknown'}</span>
+                </div>
+                <div className={styles.metaRow}>
+                    <span>{t('cache_time')}</span>
+                    <span className={`${styles.mono} ${styles.metaValueWrap}`} title={cacheTooltip}>
+                        {cacheDisplayValue}
+                    </span>
+                </div>
+            </div>
 
-                    {result.ip_info?.dns_records && result.ip_info.dns_records.length > 0 && (
-                        <div className={styles.dnsSection}>
-                            <button
-                                type="button"
-                                className={styles.dnsToggle}
-                                onClick={() => setDnsExpanded(!dnsExpanded)}
-                            >
-                                <span>{t('dns_records')}</span>
-                                <svg
-                                    width="16"
-                                    height="16"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    style={{ transform: dnsExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
-                                >
-                                    <polyline points="6 9 12 15 18 9"></polyline>
-                                </svg>
-                            </button>
-                            <div className={`${styles.dnsWrapper} ${dnsExpanded ? styles.expanded : ''}`}>
-                                <div className={styles.dnsInner}>
-                                    <div className={styles.dnsTable}>
-                                        <div className={styles.dnsHeader}>
-                                            <span>{t('dns_hostname')}</span>
-                                            <span>{t('dns_type')}</span>
-                                            <span>{t('dns_data')}</span>
-                                        </div>
-                                        {result.ip_info.dns_records.map((record) => (
-                                            <div key={`${record.hostname}-${record.type}-${record.data}`} className={styles.dnsRow}>
-                                                <span className={styles.mono}>{record.hostname}</span>
-                                                <span className={styles.dnsType}>{record.type}</span>
-                                                <span className={styles.mono}>{record.data}</span>
-                                            </div>
-                                        ))}
-                                    </div>
+            {result.online && result.ip_info?.dns_records && result.ip_info.dns_records.length > 0 && (
+                <div className={styles.dnsSection}>
+                    <button
+                        type="button"
+                        className={styles.dnsToggle}
+                        onClick={() => setDnsExpanded(!dnsExpanded)}
+                    >
+                        <span>{t('dns_records')}</span>
+                        <svg
+                            width="16"
+                            height="16"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            style={{ transform: dnsExpanded ? 'rotate(180deg)' : 'rotate(0deg)', transition: 'transform 0.2s' }}
+                        >
+                            <polyline points="6 9 12 15 18 9"></polyline>
+                        </svg>
+                    </button>
+                    <div className={`${styles.dnsWrapper} ${dnsExpanded ? styles.expanded : ''}`}>
+                        <div className={styles.dnsInner}>
+                            <div className={styles.dnsTable}>
+                                <div className={styles.dnsHeader}>
+                                    <span>{t('dns_hostname')}</span>
+                                    <span>{t('dns_type')}</span>
+                                    <span>{t('dns_data')}</span>
                                 </div>
+                                {result.ip_info.dns_records.map((record) => (
+                                    <div key={`${record.hostname}-${record.type}-${record.data}`} className={styles.dnsRow}>
+                                        <span className={styles.mono}>{record.hostname}</span>
+                                        <span className={styles.dnsType}>{record.type}</span>
+                                        <span className={styles.mono}>{record.data}</span>
+                                    </div>
+                                ))}
                             </div>
                         </div>
-                    )}
-                </>
-            )
-            }
+                    </div>
+                </div>
+            )}
 
 
 
