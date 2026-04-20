@@ -11,6 +11,14 @@ interface DnsRecord {
     data: string;
 }
 
+interface CacheInfo {
+    status?: 'HIT' | 'MISS' | 'BYPASS';
+    cachedAt?: string;
+    cachedAtDisplay?: string;
+    expiresAt?: string;
+    expiresAtDisplay?: string;
+}
+
 interface ServerResult {
     online: boolean;
     host: string;
@@ -28,6 +36,7 @@ interface ServerResult {
         location?: { country: string; city?: string };
         dns_records?: DnsRecord[];
     };
+    cache_info?: CacheInfo;
 }
 
 interface NodeResult {
@@ -226,10 +235,70 @@ function getVersionFromProtocol(protocol: number, type?: 'java' | 'bedrock'): st
     return JAVA_PROTOCOL_VERSIONS[protocol] || `${protocol}`;
 }
 
+function readCacheInfo(headers: Headers): CacheInfo | undefined {
+    const status = headers.get('x-mcs-cache-status');
+    const cachedAt = headers.get('x-mcs-cache-created-at');
+    const cachedAtDisplay = headers.get('x-mcs-cache-created-at-display');
+    const expiresAt = headers.get('x-mcs-cache-expires-at');
+    const expiresAtDisplay = headers.get('x-mcs-cache-expires-at-display');
+
+    if (!status && !cachedAt && !cachedAtDisplay && !expiresAt && !expiresAtDisplay) {
+        return undefined;
+    }
+
+    return {
+        status: status === 'HIT' || status === 'MISS' || status === 'BYPASS' ? status : undefined,
+        cachedAt: cachedAt || undefined,
+        cachedAtDisplay: cachedAtDisplay || undefined,
+        expiresAt: expiresAt || undefined,
+        expiresAtDisplay: expiresAtDisplay || undefined,
+    };
+}
+
+function applyCacheInfoToServerResult(result: ServerResult, cacheInfo: CacheInfo | undefined): ServerResult {
+    if (!cacheInfo) {
+        return result;
+    }
+
+    return {
+        ...result,
+        cache_info: cacheInfo,
+    };
+}
+
+function applyCacheInfoToDistributedResult(
+    result: DistributedResult,
+    cacheInfo: CacheInfo | undefined
+): DistributedResult {
+    if (!cacheInfo) {
+        return result;
+    }
+
+    return {
+        ...result,
+        nodes: Object.fromEntries(
+            Object.entries(result.nodes).map(([nodeId, node]) => [
+                nodeId,
+                {
+                    ...node,
+                    status: {
+                        ...node.status,
+                        cache_info: cacheInfo,
+                    },
+                },
+            ])
+        ),
+    };
+}
+
 function ServerCard({ result, label }: { result: ServerResult; label?: string }) {
     const { t } = useLanguage();
     const [dnsExpanded, setDnsExpanded] = useState(false);
     const copyTarget = result.ip_info?.ip || result.host;
+    const cacheDisplayValue = result.cache_info?.cachedAtDisplay || 'N/A';
+    const cacheTooltip = result.cache_info?.expiresAtDisplay
+        ? `${t('cache_valid_until')}: ${result.cache_info.expiresAtDisplay}`
+        : undefined;
 
     return (
         <div className={styles.result}>
@@ -324,6 +393,12 @@ function ServerCard({ result, label }: { result: ServerResult; label?: string })
                         <div className={styles.metaRow}>
                             <span>{t('location')}</span>
                             <span>{result.ip_info?.location?.country ? (result.ip_info.location.city ? `${result.ip_info.location.city}, ${result.ip_info.location.country}` : result.ip_info.location.country) : 'Unknown'}</span>
+                        </div>
+                        <div className={styles.metaRow}>
+                            <span>{t('cache_time')}</span>
+                            <span className={`${styles.mono} ${styles.metaValueWrap}`} title={cacheTooltip}>
+                                {cacheDisplayValue}
+                            </span>
                         </div>
                     </div>
 
@@ -521,16 +596,17 @@ export default function GlassCard({ mode }: GlassCardProps) {
                 });
             }
 
+            const cacheInfo = readCacheInfo(res.headers);
             const data = await res.json();
             // await new Promise(r => setTimeout(r, 500)); // Delay for effect
 
             if (mode === 'distributed') {
-                const distributedData = data as DistributedResult;
+                const distributedData = applyCacheInfoToDistributedResult(data as DistributedResult, cacheInfo);
                 setDistributedResult(distributedData);
                 // Auto-select first node
                 setSelectedNode(Object.values(distributedData.nodes)[0] || null);
             } else {
-                setResult(data as ServerResult);
+                setResult(applyCacheInfoToServerResult(data as ServerResult, cacheInfo));
             }
 
         } catch (err: unknown) {

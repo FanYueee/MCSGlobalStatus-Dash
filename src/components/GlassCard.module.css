@@ -481,6 +481,11 @@
     text-align: right;
 }
 
+.metaValueWrap {
+    white-space: normal;
+    overflow-wrap: anywhere;
+}
+
 .mono {
     font-family: 'Minecraft', 'Consolas', monospace;
 }
