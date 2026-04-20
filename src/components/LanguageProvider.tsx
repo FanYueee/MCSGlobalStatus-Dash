@@ -1,6 +1,7 @@
 "use client";
 
-import React, { createContext, useContext, useState, useSyncExternalStore } from 'react';
+import type { ReactNode } from 'react';
+import { createContext, useContext, useState, useSyncExternalStore } from 'react';
 
 type Language = 'en' | 'zh-TW';
 
@@ -153,7 +154,7 @@ function subscribeToLanguageChange(onStoreChange: () => void): () => void {
     return () => {};
 }
 
-export function LanguageProvider({ children }: { children: React.ReactNode }) {
+export function LanguageProvider({ children }: { children: ReactNode }) {
     const detectedLanguage = useSyncExternalStore<Language>(
         subscribeToLanguageChange,
         detectLanguage,

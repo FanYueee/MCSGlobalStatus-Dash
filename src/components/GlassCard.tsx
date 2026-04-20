@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import styles from './GlassCard.module.css';
 import { useLanguage } from './LanguageProvider';
@@ -229,6 +229,7 @@ function getVersionFromProtocol(protocol: number, type?: 'java' | 'bedrock'): st
 function ServerCard({ result, label }: { result: ServerResult; label?: string }) {
     const { t } = useLanguage();
     const [dnsExpanded, setDnsExpanded] = useState(false);
+    const copyTarget = result.ip_info?.ip || result.host;
 
     return (
         <div className={styles.result}>
@@ -281,8 +282,8 @@ function ServerCard({ result, label }: { result: ServerResult; label?: string })
                                 style={{ cursor: 'pointer' }}
                                 title="Click to copy"
                                 onClick={() => {
-                                    const text = result.ip_info?.ip || result.host;
-                                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                                    const text = copyTarget;
+                                    if (navigator.clipboard?.writeText) {
                                         navigator.clipboard.writeText(text).catch(err => {
                                             console.error('Failed to copy: ', err);
                                         });
@@ -329,6 +330,7 @@ function ServerCard({ result, label }: { result: ServerResult; label?: string })
                     {result.ip_info?.dns_records && result.ip_info.dns_records.length > 0 && (
                         <div className={styles.dnsSection}>
                             <button
+                                type="button"
                                 className={styles.dnsToggle}
                                 onClick={() => setDnsExpanded(!dnsExpanded)}
                             >
@@ -353,8 +355,8 @@ function ServerCard({ result, label }: { result: ServerResult; label?: string })
                                             <span>{t('dns_type')}</span>
                                             <span>{t('dns_data')}</span>
                                         </div>
-                                        {result.ip_info.dns_records.map((record, index) => (
-                                            <div key={index} className={styles.dnsRow}>
+                                        {result.ip_info.dns_records.map((record) => (
+                                            <div key={`${record.hostname}-${record.type}-${record.data}`} className={styles.dnsRow}>
                                                 <span className={styles.mono}>{record.hostname}</span>
                                                 <span className={styles.dnsType}>{record.type}</span>
                                                 <span className={styles.mono}>{record.data}</span>
@@ -383,6 +385,7 @@ function ServerCard({ result, label }: { result: ServerResult; label?: string })
             {!result.online && result.ip_info?.dns_records && result.ip_info.dns_records.length > 0 && (
                 <div className={styles.dnsSection}>
                     <button
+                        type="button"
                         className={styles.dnsToggle}
                         onClick={() => setDnsExpanded(!dnsExpanded)}
                     >
@@ -407,8 +410,8 @@ function ServerCard({ result, label }: { result: ServerResult; label?: string })
                                     <span>{t('dns_type')}</span>
                                     <span>{t('dns_data')}</span>
                                 </div>
-                                {result.ip_info.dns_records.map((record, index) => (
-                                    <div key={index} className={styles.dnsRow}>
+                                {result.ip_info.dns_records.map((record) => (
+                                    <div key={`${record.hostname}-${record.type}-${record.data}`} className={styles.dnsRow}>
                                         <span className={styles.mono}>{record.hostname}</span>
                                         <span className={styles.dnsType}>{record.type}</span>
                                         <span className={styles.mono}>{record.data}</span>
@@ -430,6 +433,7 @@ interface GlassCardProps {
 
 export default function GlassCard({ mode }: GlassCardProps) {
     const { t } = useLanguage();
+    const inputId = 'server-address-input';
     const [server, setServer] = useState('');
     const [caretPosition, setCaretPosition] = useState(0);
     const [selectionRange, setSelectionRange] = useState<{ start: number; end: number } | null>(null);
@@ -549,7 +553,7 @@ export default function GlassCard({ mode }: GlassCardProps) {
             <div className={styles.glassCard}>
                 {/* Input Section */}
                 <div className={styles.controls}>
-                    <label className={styles.inputLabel}>{t('placeholder')}</label>
+                    <label className={styles.inputLabel} htmlFor={inputId}>{t('placeholder')}</label>
 
                     <div className={styles.combinedInputRow}>
                         {/* Type Toggle Button (Minecraft Style) */}
@@ -583,6 +587,7 @@ export default function GlassCard({ mode }: GlassCardProps) {
                                     </div>
                                 )}
                                 <input
+                                    id={inputId}
                                     type="text"
                                     value={server}
                                     onChange={(e) => {
@@ -614,6 +619,7 @@ export default function GlassCard({ mode }: GlassCardProps) {
 
                     <div className={styles.row}>
                         <button
+                            type="button"
                             onClick={handleSearch}
                             disabled={loading}
                             className={styles.searchBtn}
@@ -654,6 +660,7 @@ export default function GlassCard({ mode }: GlassCardProps) {
                                 <div className={styles.nodeList}>
                                     {Object.entries(distributedResult.nodes).map(([nodeId, node]) => (
                                         <button
+                                            type="button"
                                             key={nodeId}
                                             className={`${styles.nodeItem} ${selectedNode === node ? styles.selectedNode : ''}`}
                                             onClick={() => setSelectedNode(node)}

@@ -9,6 +9,7 @@ export default function LanguageSwitcher() {
     return (
         <div className={styles.switcher}>
             <button
+                type="button"
                 className={`${styles.btn} ${language === 'en' ? styles.active : ''}`}
                 onClick={() => setLanguage('en')}
             >
@@ -16,6 +17,7 @@ export default function LanguageSwitcher() {
             </button>
             <div className={styles.divider}></div>
             <button
+                type="button"
                 className={`${styles.btn} ${language === 'zh-TW' ? styles.active : ''}`}
                 onClick={() => setLanguage('zh-TW')}
             >

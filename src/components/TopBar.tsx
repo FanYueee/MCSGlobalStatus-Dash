@@ -26,6 +26,7 @@ export default function TopBar({ mode, setMode, onAboutClick }: TopBarProps) {
                 {mode && setMode && (
                     <div className={styles.menu} style={{ marginLeft: '40px' }}>
                         <button
+                            type="button"
                             className={`${styles.navBtn} ${mode === 'standard' ? styles.active : ''}`}
                             onClick={() => setMode('standard')}
                         >
@@ -33,6 +34,7 @@ export default function TopBar({ mode, setMode, onAboutClick }: TopBarProps) {
                         </button>
                         <div className={styles.divider}></div>
                         <button
+                            type="button"
                             className={`${styles.navBtn} ${mode === 'distributed' ? styles.active : ''}`}
                             onClick={() => setMode('distributed')}
                         >
@@ -44,16 +46,17 @@ export default function TopBar({ mode, setMode, onAboutClick }: TopBarProps) {
 
             <div className={styles.rightGroup}>
                 <Link href="/api-docs">
-                    <button className={styles.navBtn}>{t('nav_api')}</button>
+                    <button type="button" className={styles.navBtn}>{t('nav_api')}</button>
                 </Link>
-                <button className={styles.navBtn} onClick={onAboutClick}>{t('nav_about')}</button>
+                <button type="button" className={styles.navBtn} onClick={onAboutClick}>{t('nav_about')}</button>
                 <Link href="/faq">
-                    <button className={styles.navBtn}>{t('nav_faq')}</button>
+                    <button type="button" className={styles.navBtn}>{t('nav_faq')}</button>
                 </Link>
 
                 <div className={styles.divider}></div>
 
                 <button
+                    type="button"
                     className={styles.navBtn}
                     onClick={() => setLanguage(language === 'en' ? 'zh-TW' : 'en')}
                     style={{ minWidth: '80px' }}

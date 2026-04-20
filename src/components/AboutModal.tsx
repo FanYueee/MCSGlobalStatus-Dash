@@ -1,6 +1,5 @@
 "use client";
 
-import React from 'react';
 import Image from 'next/image';
 import styles from './GlassCard.module.css'; // Reusing GlassCard styles for consistency
 import { useLanguage } from './LanguageProvider';
@@ -34,6 +33,7 @@ export default function AboutModal({ onClose }: AboutModalProps) {
                 <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                     <h2 style={{ margin: 0, textShadow: '2px 2px 0 #000' }}>{t('about_title')}</h2>
                     <button
+                        type="button"
                         onClick={onClose}
                         style={{
                             background: 'none',
