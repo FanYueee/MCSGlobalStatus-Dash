@@ -399,19 +399,30 @@
 
 @media (max-width: 768px) {
   .shell {
-    padding: 104px 0 32px;
+    padding: 20px 0 32px;
   }
 
   .frame {
-    width: calc(100vw - 24px);
+    width: 100%;
+    padding: 0 12px;
+    box-sizing: border-box;
   }
 
   .hero,
   .section {
-    padding: 18px;
+    padding: 18px 16px;
   }
 
   .navLink {
     width: 100%;
+  }
+
+  .backLink {
+    width: 100%;
+  }
+
+  .table {
+    display: block;
+    overflow-x: auto;
   }
 }

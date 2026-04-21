@@ -16,7 +16,7 @@ export default function TopBar({ mode, setMode, onAboutClick }: TopBarProps) {
     return (
         <div className={styles.topBar}>
             <div className={styles.leftGroup}>
-                <Link href="/" style={{ textDecoration: 'none' }}>
+                <Link href="/" className={styles.titleLink}>
                     <div className={styles.titleSection}>
                         <h1 className={styles.title}>{t('title')}</h1>
                         <span className={styles.subtitle}>{t('subtitle')}</span>
@@ -24,7 +24,7 @@ export default function TopBar({ mode, setMode, onAboutClick }: TopBarProps) {
                 </Link>
 
                 {mode && setMode && (
-                    <div className={styles.menu} style={{ marginLeft: '40px' }}>
+                    <div className={`${styles.menu} ${styles.modeMenu}`}>
                         <button
                             type="button"
                             className={`${styles.navBtn} ${mode === 'standard' ? styles.active : ''}`}
@@ -57,9 +57,8 @@ export default function TopBar({ mode, setMode, onAboutClick }: TopBarProps) {
 
                 <button
                     type="button"
-                    className={styles.navBtn}
+                    className={`${styles.navBtn} ${styles.languageBtn}`}
                     onClick={() => setLanguage(language === 'en' ? 'zh-TW' : 'en')}
-                    style={{ minWidth: '80px' }}
                 >
                     {language === 'en' ? 'EN' : '繁體中文'}
                 </button>

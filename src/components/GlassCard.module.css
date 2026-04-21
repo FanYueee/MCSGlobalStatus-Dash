@@ -1,6 +1,6 @@
 .cardWrapper {
     perspective: 1000px;
-    width: 85vw;
+    width: 100%;
     max-width: none;
 }
 
@@ -20,6 +20,7 @@
     padding: 30px;
     position: relative;
     overflow: hidden;
+    box-sizing: border-box;
     font-family: 'Minecraft', 'Consolas', monospace;
     color: #e0e0e0;
 }
@@ -315,6 +316,11 @@
     margin-bottom: 24px;
 }
 
+.headerInfo {
+    min-width: 0;
+    flex: 1;
+}
+
 .favicon {
     width: 64px;
     height: 64px;
@@ -340,9 +346,11 @@
     font-size: 1.3rem;
     margin: 0 0 8px 0;
     color: #fff;
-    line-height: 1;
+    line-height: 1.25;
     text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5);
     font-family: 'Minecraft', 'Consolas', monospace;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .tags {
@@ -404,6 +412,7 @@
 .statsRow {
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -418,6 +427,7 @@
     align-items: center;
     justify-content: center;
     transition: background 0.2s;
+    min-width: 160px;
 }
 
 .statBox:hover {
@@ -462,6 +472,8 @@
 .metaRow {
     display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
     padding: 10px 20px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     font-size: 0.85rem;
@@ -474,11 +486,16 @@
 
 .metaRow span:first-child {
     color: rgba(255, 255, 255, 0.5);
+    flex-shrink: 0;
 }
 
 .metaRow span:last-child {
     color: #fff;
     text-align: right;
+    min-width: 0;
+    max-width: 65%;
+    overflow-wrap: anywhere;
+    word-break: break-word;
 }
 
 .metaValueWrap {
@@ -524,7 +541,7 @@
 
 .offlineMessage {
     margin-bottom: 16px;
-    text-align: center;
+    text-align: left;
     color: #FF5555;
     font-style: normal;
     background: rgba(0, 0, 0, 0.3);
@@ -532,6 +549,8 @@
     border-radius: 0;
     border: 2px solid rgba(255, 85, 85, 0.3);
     font-family: 'Minecraft', 'Consolas', monospace;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
 }
 
 /* Both Results Side by Side */
@@ -591,11 +610,46 @@
 /* Responsive */
 @media (max-width: 768px) {
     .cardWrapper {
+        width: 100%;
         max-width: 100%;
+    }
+
+    .glassCard {
+        padding: 18px 16px;
+    }
+
+    .controls {
+        gap: 16px;
+    }
+
+    .combinedInputRow {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .typeToggleBtn {
+        width: 100% !important;
+        min-width: 0;
+        padding: 12px 16px;
+    }
+
+    .inputLabel {
+        font-size: 0.82rem;
+        line-height: 1.5;
+    }
+
+    .input,
+    .inputMirror,
+    .caretOverlay {
+        padding: 12px;
+        font-size: 0.95rem;
     }
 
     .bothResults {
         grid-template-columns: 1fr;
+        gap: 16px;
+        margin-top: 24px;
+        padding-top: 18px;
     }
 
     .row {
@@ -604,6 +658,105 @@
 
     .searchBtn {
         width: 100%;
+        padding: 12px 14px;
+        font-size: 1rem;
+    }
+
+    .result {
+        margin-top: 24px;
+        padding-top: 18px;
+    }
+
+    .resultHeader {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        margin-bottom: 18px;
+    }
+
+    .headerInfo {
+        width: 100%;
+    }
+
+    .headerInfo h3 {
+        font-size: 1rem;
+        line-height: 1.4;
+    }
+
+    .tags {
+        gap: 6px;
+    }
+
+    .motdBox {
+        padding: 14px;
+        font-size: 0.85rem;
+        line-height: 1.5;
+    }
+
+    .statsRow {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .statBox {
+        min-width: 0;
+        padding: 14px 18px;
+    }
+
+    .statValue {
+        font-size: 1.15rem;
+    }
+
+    .metaInfo {
+        padding: 6px 0;
+    }
+
+    .metaRow {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+        padding: 12px 14px;
+    }
+
+    .metaRow span:last-child {
+        width: 100%;
+        max-width: none;
+        text-align: left;
+    }
+
+    .offlineMessage {
+        margin-bottom: 14px;
+        padding: 10px 12px;
+        font-size: 0.82rem;
+    }
+
+    .bothResults .result {
+        padding: 16px;
+    }
+
+    .dnsToggle {
+        gap: 12px;
+        padding: 10px 12px;
+        font-size: 0.78rem;
+    }
+
+    .dnsTable {
+        overflow-x: auto;
+    }
+
+    .dnsHeader,
+    .dnsRow {
+        min-width: 520px;
+        padding: 10px 12px;
+    }
+
+    .dnsHeader {
+        font-size: 0.65rem;
+    }
+
+    .dnsRow {
+        font-size: 0.72rem;
     }
 }
 
@@ -824,14 +977,29 @@
 @media (max-width: 768px) {
     .distributedLayout {
         flex-direction: column;
+        gap: 16px;
     }
 
     .nodeSidebar {
         width: 100%;
-        max-height: 300px;
+        max-height: 260px;
+        padding: 10px;
     }
 
     .nodeDetail {
         width: 100%;
+    }
+
+    .nodeItem {
+        padding: 8px;
+    }
+
+    .nodeRegion {
+        font-size: 0.82rem;
+    }
+
+    .nodeIp {
+        font-size: 0.65rem;
+        overflow-wrap: anywhere;
     }
 }

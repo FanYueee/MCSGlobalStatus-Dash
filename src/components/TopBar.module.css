@@ -3,14 +3,15 @@
     top: 0;
     left: 0;
     width: 100%;
+    min-height: 80px;
     height: 80px;
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(10px);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    /* Space out left and right groups */
     padding: 0 40px;
+    box-sizing: border-box;
     z-index: 100;
     border-bottom: 2px solid rgba(255, 255, 255, 0.1);
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
@@ -20,12 +21,22 @@
     display: flex;
     align-items: center;
     gap: 60px;
+    min-width: 0;
 }
 
 .rightGroup {
     display: flex;
     align-items: center;
     gap: 20px;
+}
+
+.rightGroup > a {
+    display: flex;
+}
+
+.titleLink {
+    text-decoration: none;
+    flex-shrink: 0;
 }
 
 .titleSection {
@@ -39,6 +50,7 @@
     color: #ffffff;
     text-shadow: 2px 2px 0 #000;
     margin: 0;
+    line-height: 1.2;
 }
 
 .subtitle {
@@ -46,12 +58,17 @@
     font-size: 0.8rem;
     color: #AAAAAA;
     text-shadow: 1px 1px 0 #000;
+    line-height: 1.4;
 }
 
 .menu {
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.modeMenu {
+    margin-left: 40px;
 }
 
 /* Authentic Minecraft Button Style for Nav */
@@ -67,7 +84,8 @@
     text-shadow: 2px 2px 0 #000000;
     outline: none;
     box-shadow: inset -2px -2px 0 #000, inset 2px 2px 0 rgba(255, 255, 255, 0.2);
-    /* Fallback */
+    line-height: 1.2;
+    white-space: nowrap;
 }
 
 /* 3D Bevel Pseudo-element */
@@ -95,11 +113,14 @@
 }
 
 .navBtn.active::before {
-    /* Invert for active/depressed look if desired, or just keep it highlighted */
     border-top: 2px solid rgba(0, 0, 0, 0.6);
     border-left: 2px solid rgba(0, 0, 0, 0.6);
     border-right: 2px solid rgba(255, 255, 255, 0.2);
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);
+}
+
+.languageBtn {
+    min-width: 80px;
 }
 
 .divider {
@@ -107,4 +128,76 @@
     height: 30px;
     background: rgba(255, 255, 255, 0.2);
     margin: 0 10px;
+}
+
+@media (max-width: 768px) {
+    .topBar {
+        position: sticky;
+        height: auto;
+        min-height: 0;
+        padding: 14px 12px 12px;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        gap: 12px;
+    }
+
+    .leftGroup {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .titleLink {
+        width: 100%;
+    }
+
+    .title {
+        font-size: 1.05rem;
+    }
+
+    .subtitle {
+        font-size: 0.68rem;
+    }
+
+    .modeMenu {
+        margin-left: 0;
+    }
+
+    .menu {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .rightGroup {
+        width: 100%;
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 8px;
+    }
+
+    .rightGroup > a {
+        display: block;
+        width: 100%;
+    }
+
+    .navBtn {
+        width: 100%;
+        padding: 10px 12px;
+        font-size: 0.78rem;
+        line-height: 1.35;
+        white-space: normal;
+        text-align: center;
+    }
+
+    .languageBtn {
+        min-width: 0;
+    }
+
+    .divider {
+        display: none;
+    }
 }

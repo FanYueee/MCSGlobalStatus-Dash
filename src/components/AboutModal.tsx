@@ -21,13 +21,21 @@ export default function AboutModal({ onClose }: AboutModalProps) {
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            padding: '12px',
+            boxSizing: 'border-box',
             zIndex: 1000,
             backgroundColor: 'rgba(0, 0, 0, 0.4)',
             backdropFilter: 'blur(5px)'
         }} onClick={onClose}>
             <div
                 className={styles.glassCard}
-                style={{ width: '600px', maxWidth: '90vw', cursor: 'default' }}
+                style={{
+                    width: 'min(600px, 100%)',
+                    maxWidth: '100%',
+                    maxHeight: 'calc(100vh - 24px)',
+                    overflowY: 'auto',
+                    cursor: 'default'
+                }}
                 onClick={e => e.stopPropagation()}
             >
                 <div style={{ marginBottom: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
